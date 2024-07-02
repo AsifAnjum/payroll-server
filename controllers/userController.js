@@ -231,6 +231,14 @@ exports.fetchAllUsers = async (req, res) => {
 
     const queries = {};
 
+    if (req.query.search) {
+      const searchQuery = req.query.search;
+      for (const key in searchQuery) {
+        searchQuery[key] = new RegExp(searchQuery[key], "i");
+      }
+      filters = searchQuery;
+    }
+
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       queries.sortBy = sortBy;

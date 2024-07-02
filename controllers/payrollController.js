@@ -114,10 +114,18 @@ exports.fetchAllPayroll = async (req, res) => {
     let filters = { ...req.query };
 
     //sort,page,limit ---> exclude
-    const excludeFields = ["sort", "page", "limit", "fields"];
+    const excludeFields = ["sort", "page", "limit", "fields", "search"];
     excludeFields.forEach((field) => delete filters[field]);
 
     const queries = {};
+
+    if (req.query.search) {
+      const searchQuery = req.query.search;
+      for (const key in searchQuery) {
+        searchQuery[key] = new RegExp(searchQuery[key], "i");
+      }
+      filters = searchQuery;
+    }
 
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
